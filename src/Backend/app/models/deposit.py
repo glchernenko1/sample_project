@@ -61,21 +61,21 @@ class Deposit(BaseModel):
 
     @field_validator('period')
     def period_validator(cls, v):
-        return cls._range_validator(v, settings.SettingsDeposits.min_period, settings.SettingsDeposits.max_period,
-                                    f'Периуд должен быть от {settings.SettingsDeposits.min_period } '
-                                    f'до {settings.SettingsDeposits.max_period } месяцев')
+        return cls._range_validator(v, settings.deposits_settings.min_period, settings.deposits_settings.max_period,
+                                    f'Периуд должен быть от {settings.deposits_settings.min_period } '
+                                    f'до {settings.deposits_settings.max_period } месяцев')
 
     @field_validator('amount')
     def amount_validator(cls, v):
-        return cls._range_validator(v, settings.SettingsDeposits.min_amount, settings.SettingsDeposits.max_amount,
-                                    f'Вклад должен быть от {settings.SettingsDeposits.min_amount} '
-                                    f'до {settings.SettingsDeposits.max_amount}')
+        return cls._range_validator(v, settings.deposits_settings.min_amount, settings.deposits_settings.max_amount,
+                                    f'Вклад должен быть от {settings.deposits_settings.min_amount} '
+                                    f'до {settings.deposits_settings.max_amount}')
 
 
 
     @field_validator('rate')
     def rate_validator(cls, v):
-        return cls._range_validator(v, settings.SettingsDeposits.min_rate, settings.SettingsDeposits.max_rate,
-                                    f'Процентная ставка должна быть от {settings.SettingsDeposits.min_rate} '
-                                    f'до {settings.SettingsDeposits.max_rate}'
+        return cls._range_validator(v, settings.deposits_settings.min_rate, settings.deposits_settings.max_rate,
+                                    f'Процентная ставка должна быть от {settings.deposits_settings.min_rate} '
+                                    f'до {settings.deposits_settings.max_rate}'
                                     )
