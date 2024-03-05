@@ -3,7 +3,7 @@ from .settings import settings
 
 
 uvicorn.run(
-    'Backend.app:app',
+    'app.app:app',
     host=settings.server_host,
     port=settings.server_port,
     reload=True,

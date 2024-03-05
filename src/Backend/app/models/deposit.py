@@ -8,10 +8,10 @@ from ..settings import settings
 
 
 class Deposit(BaseModel):
-    st_date: date = Field(alias='date') # документация https://docs.pydantic.dev/latest/concepts/fields/
-    period: int
-    amount: float
-    rate: float
+    st_date: date = Field(alias='date', examples=["13.01.1998"]) # документация https://docs.pydantic.dev/latest/concepts/fields/
+    period: int = Field(alias='period', examples=[1, 60])
+    amount: float = Field(alias='amount', examples=[10000, 1000000])
+    rate: float = Field(alias='rate', examples=[6, 8])
 
     @staticmethod
     def _range_validator(v:int|float, min_value:int|float, max_value:int|float, message:str):
