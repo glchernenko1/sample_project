@@ -12,7 +12,7 @@ class Settings(BaseSettings):
         min_amount: Decimal = 10000
         max_rate: Decimal = 8
         min_rate: Decimal = 1
-    # class Config: #todo заменить на
+    # class Config: #
     #     env_file = '.env'
     #     env_file_encoding = 'utf-8'
     model_config = SettingsConfigDict(env_file=".env")
