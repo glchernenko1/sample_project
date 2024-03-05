@@ -30,11 +30,11 @@ pytest
 ```
 ### Запуск тестов с показом покрытием
 ```bash
-pytest --cov= src/Backend/tests/ 
+pytest --cov=src/Backend/tests/ 
 ```
 ### Запуск тестов с покрытием и выводом в html
 ```bash
-pytest --cov= src/Backend/tests/ --cov=report hhtml --cov report term
+pytest --cov=src/Backend/tests/ --cov=report hhtml --cov report term
 
 ```
 
