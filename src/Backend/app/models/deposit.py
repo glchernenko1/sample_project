@@ -1,37 +1,81 @@
+from typing import Any
+
 from fastapi import HTTPException
-from pydantic import BaseModel, field_validator, Field, ValidationError
-from datetime import date
+from pydantic import BaseModel, field_validator, Field, ValidationError , validator, model_validator
+from datetime import date, datetime
 from ..settings import settings
-from decimal import *
 
 
 
 class Deposit(BaseModel):
-    st_date: date = Field(alias='date')
+    st_date: date = Field(alias='date') # документация https://docs.pydantic.dev/latest/concepts/fields/
     period: int
-    amount: Decimal
-    rate: Decimal = Field(ge=settings.SettingsDeposits.min_rate, le=settings.SettingsDeposits.max_rate, description='Interest on deposit')
+    amount: float
+    rate: float
+
+    @staticmethod
+    def _range_validator(v:int|float, min_value:int|float, max_value:int|float, message:str):
+        if v < min_value or v > max_value:
+            raise ValueError(message)
+        return v
+
+    @model_validator(mode='before')
+    def check_card_number_omitted(cls, data: Any) -> Any:
+        err=[]
+        if  not isinstance(data, dict) or len(data.keys())==0 :
+            raise ValueError('Данные отсутствуют')
+
+        if data.get('date') is None:
+            err.append('Дата отсутствует')
+
+        if data.get('period') is None:
+            err.append('Период отсутствует')
+        elif not isinstance(data.get('period'), int):
+            err.append('Период должен быть целым числом')
+
+        if data.get('amount') is None:
+            err.append('Вклад отсутствует')
+        elif not isinstance(data.get('amount'), (int, float)):
+            err.append('Вклад должен быть числом')
+
+        if data.get('rate') is None:
+            err.append('Ставка отсутствует')
+        elif not isinstance(data.get('rate'), (int, float)):
+            err.append('Ставка должна быть числом')
+
+        if len(err) == 1:
+            raise ValueError(err[0])
+        if len(err) >1:
+            raise ValueError(' | '.join(err))
+        return data
 
 
-    @field_validator('st_date',mode='before')
+
+    @field_validator('st_date',mode='before') # документация https://docs.pydantic.dev/latest/concepts/validators/
     def date_validator(cls, v):
         try:
-            date.fromisoformat(v)
-            return v
+            return datetime.strptime(v, "%d.%m.%Y").date()
         except ValueError:
             raise ValueError('Некоректная дата')
 
 
     @field_validator('period')
     def period_validator(cls, v):
-        if v < settings.SettingsDeposits.min_period or v > settings.SettingsDeposits.max_period:
-            raise ValueError(f'Периуд должен быть от {settings.SettingsDeposits.min_period } '
-                                  f'до {settings.SettingsDeposits.max_period } месяцев')
-        return v
+        return cls._range_validator(v, settings.SettingsDeposits.min_period, settings.SettingsDeposits.max_period,
+                                    f'Периуд должен быть от {settings.SettingsDeposits.min_period } '
+                                    f'до {settings.SettingsDeposits.max_period } месяцев')
 
     @field_validator('amount')
     def amount_validator(cls, v):
-        if v < settings.SettingsDeposits.min_amount or v > settings.SettingsDeposits.max_amount:
-            raise ValueError(f'Вклад должен быть от {settings.SettingsDeposits.min_amount} '
-                                  f'до {settings.SettingsDeposits.max_amount}')
-        return v
+        return cls._range_validator(v, settings.SettingsDeposits.min_amount, settings.SettingsDeposits.max_amount,
+                                    f'Вклад должен быть от {settings.SettingsDeposits.min_amount} '
+                                    f'до {settings.SettingsDeposits.max_amount}')
+
+
+
+    @field_validator('rate')
+    def rate_validator(cls, v):
+        return cls._range_validator(v, settings.SettingsDeposits.min_rate, settings.SettingsDeposits.max_rate,
+                                    f'Процентная ставка должна быть от {settings.SettingsDeposits.min_rate} '
+                                    f'до {settings.SettingsDeposits.max_rate}'
+                                    )

@@ -16,4 +16,4 @@ app.include_router(router)
 async def validation_exception_handler(request, exc):
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
-        content=jsonable_encoder({"error": " ".join([ err['msg']+'|'  for err in exc.errors()])}))
+        content=jsonable_encoder({"error": " | ".join([ err['msg']  for err in exc.errors()])}))

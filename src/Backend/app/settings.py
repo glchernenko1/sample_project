@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from decimal import *
 
 
@@ -12,8 +12,9 @@ class Settings(BaseSettings):
         min_amount: Decimal = 10000
         max_rate: Decimal = 8
         min_rate: Decimal = 1
-    class Config:
-        env_file = '.env'
-        env_file_encoding = 'utf-8'
-
-settings = Settings(_env_file='../../.env')
+    # class Config: #todo заменить на
+    #     env_file = '.env'
+    #     env_file_encoding = 'utf-8'
+    model_config = SettingsConfigDict(env_file=".env")
+# settings = Settings(_env_file='../../.env')
+settings = Settings()

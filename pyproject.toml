@@ -1,0 +1,10 @@
+[tool.pytest.ini_options]
+pythonpath  = [
+    "src/Backend",
+    "."# Путь к вашему приложению
+          # Путь к тестам
+]
+testpaths = [
+    "src/Backend/tests",
+]
+
